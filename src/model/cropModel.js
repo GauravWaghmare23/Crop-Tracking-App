@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 // Utility function to generate a unique crop ID (example)
@@ -21,8 +22,8 @@ const cropSchema = new mongoose.Schema({
     distributorDate: { type: Date },
     distributorLocation: { type: String },
     distributorDeliveryName: { type: String },
+    distributorDeliveryNumber: { type: Number },
     distributorPhone: { type: String },
-    distributorDeliveryNumber: { type: Number, unique: true, sparse: true },
 
     // Retailer details – optional until assigned
     retailerUsername: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
-import axios from 'axios';
-import jsQR from 'jsqr';
+import React, { useState } from "react";
+import axios from "axios";
+import jsQR from "jsqr";
 
 interface ScanIconProps {
   className?: string;
@@ -44,33 +44,37 @@ const getCropDataColumns = (data: CropData[]): string[] => {
   if (!data || data.length === 0) return [];
   const sample = data[0];
   const allKeys = new Set<string>();
-  Object.keys(sample).forEach(key => allKeys.add(key));
+  Object.keys(sample).forEach((key) => allKeys.add(key));
   return Array.from(allKeys);
 };
 
 export default function AllDataPage() {
   const [file, setFile] = useState<File | null>(null);
-  const [cropId, setCropId] = useState<string>('');
+  const [cropId, setCropId] = useState<string>("");
   const [data, setData] = useState<CropData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const [scanMessage, setScanMessage] = useState<string>('Upload or drag a QR code image');
+  const [error, setError] = useState<string>("");
+  const [scanMessage, setScanMessage] = useState<string>(
+    "Upload or drag a QR code image"
+  );
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    setError('');
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setError("");
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
-      setScanMessage('Scanning...');
+      setScanMessage("Scanning...");
 
       const reader = new FileReader();
       reader.onload = async (e: ProgressEvent<FileReader>) => {
         const image = new Image();
-        if (e.target && typeof e.target.result === 'string') {
+        if (e.target && typeof e.target.result === "string") {
           image.src = e.target.result;
         } else {
-          setError('Failed to read file.');
-          setScanMessage('Operation failed.');
+          setError("Failed to read file.");
+          setScanMessage("Operation failed.");
           return;
         }
 
@@ -78,8 +82,8 @@ export default function AllDataPage() {
           try {
             scanImage(image);
           } catch (err) {
-            setScanMessage('Error processing image.');
-            setError('Failed to process image. Please try again.');
+            setScanMessage("Error processing image.");
+            setError("Failed to process image. Please try again.");
           }
         };
       };
@@ -88,11 +92,11 @@ export default function AllDataPage() {
   };
 
   const scanImage = (image: HTMLImageElement) => {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
     if (!context) {
-      setError('Failed to get 2D canvas context.');
-      setScanMessage('Operation failed.');
+      setError("Failed to get 2D canvas context.");
+      setScanMessage("Operation failed.");
       return;
     }
     canvas.width = image.width;
@@ -104,8 +108,12 @@ export default function AllDataPage() {
     try {
       code = jsQR(imageData.data, imageData.width, imageData.height);
     } catch (e) {
-      setError('QR code decoding failed. Please ensure the image is a clear QR code and try again.');
-      setScanMessage('Error decoding QR code. It may be too blurry or not a valid QR code.');
+      setError(
+        "QR code decoding failed. Please ensure the image is a clear QR code and try again."
+      );
+      setScanMessage(
+        "Error decoding QR code. It may be too blurry or not a valid QR code."
+      );
       return;
     }
 
@@ -114,45 +122,70 @@ export default function AllDataPage() {
       setScanMessage(`Found Crop ID: ${code.data}. Fetching data...`);
       handleFetch(code.data);
     } else {
-      setScanMessage('No QR code found in the image.');
-      setError('Could not detect a QR code. Please try another image.');
+      setScanMessage("No QR code found in the image.");
+      setError("Could not detect a QR code. Please try another image.");
     }
   };
 
   const handleFetch = async (id: string) => {
     setLoading(true);
-    setError('');
+    setError("");
     try {
       const getResponse = await axios.get(`/api/crops/data/get?cropId=${id}`);
       if (getResponse.status === 200) {
         setData(getResponse.data.crops || []);
-        setScanMessage('Data fetched successfully!');
+        setScanMessage("Data fetched successfully!");
       } else {
-        throw new Error('Failed to fetch data');
+        throw new Error("Failed to fetch data");
       }
     } catch (err: any) {
-      console.error('API Error:', err);
-      setError(`An error occurred: ${err.message || 'Unknown error'}`);
-      setScanMessage('Operation failed.');
+      console.error("API Error:", err);
+      setError(`An error occurred: ${err.message || "Unknown error"}`);
+      setScanMessage("Operation failed.");
     } finally {
       setLoading(false);
     }
   };
 
-  const headers = data.length > 0 ? getCropDataColumns(data) : [
-    "cropId", "cropName", "farmerNumber", "farmerUsername", "quantity", "price", "location", "harvestDate", "expiryDate", "createdAt", "distributorUsername", "distributorPrice", "distributorDate", "distributorLocation", "distributorDeliveryName", "distributorPhone", "distributorDeliveryNumber", "retailerUsername", "retailerPrice", "retailerDate", "retailerLocation"
-  ];
+  const headers =
+    data.length > 0
+      ? getCropDataColumns(data)
+      : [
+          "cropId",
+          "cropName",
+          "farmerNumber",
+          "farmerUsername",
+          "quantity",
+          "price",
+          "location",
+          "harvestDate",
+          "expiryDate",
+          "createdAt",
+          "distributorUsername",
+          "distributorPrice",
+          "distributorDate",
+          "distributorLocation",
+          "distributorDeliveryName",
+          "distributorPhone",
+          "distributorDeliveryNumber",
+          "retailerUsername",
+          "retailerPrice",
+          "retailerDate",
+          "retailerLocation",
+        ];
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-4xl rounded-xl bg-white p-8 shadow-md flex flex-col gap-8">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-100 to-green-300 p-6">
+      <div className="w-full max-w-5xl rounded-3xl bg-white p-10 shadow-2xl flex flex-col gap-10">
         <div className="flex flex-col items-center gap-4">
-          <ScanIcon className="h-12 w-12 text-gray-700" />
-          <h1 className="text-3xl font-bold text-gray-800">Crop Data Dashboard</h1>
-          <p className="text-center text-gray-500">{scanMessage}</p>
+          <ScanIcon className="h-16 w-16 text-green-700" />
+          <h1 className="text-4xl font-bold text-green-800">
+            Crop Data Dashboard
+          </h1>
+          <p className="text-center text-green-600">{scanMessage}</p>
         </div>
 
-        <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed border-gray-300 p-8 text-center">
+        <div className="flex flex-col items-center gap-4 rounded-xl border-2 border-dashed border-green-400 p-8 text-center bg-green-50">
           <input
             id="file-upload"
             type="file"
@@ -162,53 +195,56 @@ export default function AllDataPage() {
           />
           <label
             htmlFor="file-upload"
-            className="cursor-pointer rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-blue-700"
+            className="cursor-pointer rounded-lg bg-green-600 px-8 py-4 font-semibold text-white text-lg transition-colors hover:bg-green-700"
           >
             Upload QR Code Image
           </label>
         </div>
 
         {cropId && (
-          <div className="text-center text-lg font-medium text-gray-700">
-            Detected Crop ID: <span className="text-blue-600">{cropId}</span>
+          <div className="text-center text-xl font-medium text-green-700">
+            Detected Crop ID:{" "}
+            <span className="text-green-800 font-bold">{cropId}</span>
           </div>
         )}
 
         {loading && (
           <div className="flex items-center justify-center p-8">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent"></div>
-            <span className="ml-4 text-gray-600">Loading data...</span>
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-solid border-green-500 border-r-transparent"></div>
+            <span className="ml-4 text-green-600 text-lg">Loading data...</span>
           </div>
         )}
 
         {error && (
-          <div className="rounded-xl border border-red-500 bg-red-50 p-4 text-center text-red-700">
+          <div className="rounded-xl border border-red-500 bg-red-50 p-6 text-center text-red-700 text-lg">
             <strong>Error:</strong> {error}
           </div>
         )}
 
         {data.length > 0 && (
-          <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  {headers.map((header, index) => (
-                    <th key={index} className="bg-gray-50 text-left px-6 py-3 text-xs font-semibold uppercase text-gray-500">{header}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {data.map((item, index) => (
-                  <tr key={item.cropId || index} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                    {headers.map((header, colIndex) => (
-                      <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {item[header] !== undefined && JSON.stringify(item[header], null, 2)}
-                      </td>
-                    ))}
-                  </tr>
+          <div className="flex flex-col gap-8">
+            {data.map((item, index) => (
+              <div
+                key={item.cropId || index}
+                className="rounded-2xl border border-green-300 bg-green-50 p-8 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <h2 className="text-2xl font-bold text-green-800 mb-6">
+                  Crop Details
+                </h2>
+                {headers.map((header, colIndex) => (
+                  <div key={colIndex} className="mb-6">
+                    <h3 className="text-green-700 font-semibold text-lg">
+                      {header}
+                    </h3>
+                    <p className="text-green-900 text-xl mt-2">
+                      {item[header] !== undefined
+                        ? JSON.stringify(item[header], null, 2)
+                        : "—"}
+                    </p>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            ))}
           </div>
         )}
       </div>
