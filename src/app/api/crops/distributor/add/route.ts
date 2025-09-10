@@ -6,6 +6,7 @@ import Crop from "@/model/cropModel";
 
 export async function PUT(request: NextRequest) {
     try {
+        await connect();
         const token = request.cookies.get("token")?.value || "";
         if (!token) {
             return NextResponse.json({ message: "Unauthorized: No token provided" }, { status: 401 });
@@ -17,8 +18,6 @@ export async function PUT(request: NextRequest) {
         if (!user) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
-
-        await connect();
 
         const {cropId,distributorPrice,distributorDate,distributorLocation,distributorDeliveryName,distributorPhone,distributorDeliveryNumber} = await request.json();
 
@@ -39,6 +38,6 @@ export async function PUT(request: NextRequest) {
         return NextResponse.json({message:"Distributor added successfully"}, {status:200});
 
     } catch (error) {
-       NextResponse.json({message:"Failed to add distributor",error}, {status:500}); 
+       return NextResponse.json({message:"Failed to add distributor",error}, {status:500});
     }
 }

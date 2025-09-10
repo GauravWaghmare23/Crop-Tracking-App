@@ -7,7 +7,6 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   role: { type: String, required: true, enum: ["farmer", "distributor", "retailer"] },
   number: { type: String, required: true },
-  cropId: { type: String, required: true }, 
   address: { type: String, required: true },
 }, { timestamps: true });
 

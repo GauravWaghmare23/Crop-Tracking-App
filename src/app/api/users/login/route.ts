@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
             email:user.email
         }
 
-        const token = jwt.sign(tokenData,process.env.token_secret!,{expiresIn:"1d"});
+        const token = jwt.sign(tokenData,process.env.TOKEN_SECRET!,{expiresIn:"1d"});
 
         const response = NextResponse.json({ message: "Login successful", success:true, user: {
                 id: user._id,
@@ -38,7 +38,8 @@ export async function POST(request: NextRequest) {
         response.cookies.set("token",token,{ httpOnly: true});
         console.log(response)
         return response;
-    } catch (error) {
-        
+    } catch (error: any) {
+        console.error('Login API Error:', error);
+        return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }
 }

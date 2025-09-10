@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import axios from "axios";
-import { redirect } from "next/navigation";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -100,6 +99,7 @@ export default function Signup() {
               onChange={handleChange}
               required
               className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              autoComplete="new-password"
             />
           </div>
 

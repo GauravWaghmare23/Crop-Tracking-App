@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 
 export async function GET(request:NextRequest) {
     try {
+        await connect();
         const token = request.cookies.get("token")?.value || "";
         if (!token) {
             return NextResponse.json({ message: "Unauthorized: No token provided" }, { status: 401 });
@@ -18,17 +19,10 @@ export async function GET(request:NextRequest) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
 
-        const crops = await Crop.findOne({distributorUsername: user._id});
-        if (!crops) {
-            return NextResponse.json({ message: "Crop not found" }, { status: 404 });
-        }
-
-        crops.farmerUsername = user.username;
-        crops.farmerNumber = user.number;
-
+        const crops = await Crop.find({distributorUsername: user._id});
         return NextResponse.json({ crops }, { status: 200 });
 
     } catch (error) {
-        return NextResponse.json({ message: "Failed to fetch crop", error }, { status: 500 });
+        return NextResponse.json({ message: "Failed to fetch crops", error }, { status: 500 });
     }
 }

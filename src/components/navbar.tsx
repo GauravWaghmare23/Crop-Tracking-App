@@ -79,6 +79,7 @@ function Navbar() {
             <li>
               <a onClick={() => router.push('/')} className="block py-2 px-3 text-white rounded-sm transition-colors duration-200 hover:text-lime-300 cursor-pointer">Home</a>
             </li>
+            
             {loading ? (
               <li>
                 <span className="block py-2 px-3 text-gray-400">Loading...</span>
@@ -102,6 +103,10 @@ function Navbar() {
               </>
             ) : (
               <>
+              
+                <li>
+                  <a onClick={() => router.push('/allData')} className="block py-2 px-3 text-white rounded-sm transition-colors duration-200 hover:text-lime-300 cursor-pointer">Scan</a>
+                </li>
                 <li>
                   <a onClick={() => router.push('/login')} className="px-4 py-2 text-sm font-medium text-white bg-lime-600 rounded-full hover:bg-lime-700 transition-colors duration-200 cursor-pointer">
                     Login

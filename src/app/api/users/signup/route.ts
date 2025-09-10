@@ -7,6 +7,15 @@ export async function POST(request: NextRequest) {
     try {
         await connect();
         const {username, email, password, role, number, address} = await request.json();
+
+        // ✅ Add server-side validation for all required fields
+        if (!username || !email || !password || !role || !number || !address) {
+            return NextResponse.json(
+                { message: 'Missing one or more required fields.' },
+                { status: 400 }
+            );
+        }
+
         console.log(username, email, password, role, number, address);
 
         // Check if user already exists
@@ -26,8 +35,16 @@ export async function POST(request: NextRequest) {
             { message: 'User created successfully' },
             { status: 201 }
         );
-    } catch (error) {
-        console.log(error);
+    } catch (error: any) {
+        console.error('Registration API Error:', error); // ✅ Use console.error and provide more context
+
+        // Check for Mongoose validation errors
+        if (error.name === 'ValidationError') {
+            const errors = Object.keys(error.errors).map(key => error.errors[key].message);
+            return NextResponse.json({ message: 'Validation failed', errors }, { status: 400 });
+        }
+        
+        // Return a generic error for all other cases
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }
 }

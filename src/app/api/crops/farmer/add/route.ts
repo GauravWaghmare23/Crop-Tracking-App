@@ -40,10 +40,11 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'Crop with this ID already exists' }, { status: 409 });
         }
 
-        farmer.cropId = cropId; // Assign the cropId to the farmer's document
-        await farmer.save(); // Save the updated farmer document
+        // Remove cropId assignment to farmer document as it is not needed
+        // farmer.cropId = cropId; // Assign the cropId to the farmer's document
+        // await farmer.save(); // Save the updated farmer document
 
-        console.log('Crop ID assigned to farmer successfully');
+        // console.log('Crop ID assigned to farmer successfully');
 
         // Create a new crop document and associate it with the farmer's ID
         const newCrop = new Crop({

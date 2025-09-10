@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ message: "Authorization failed" }, { status: 401 });
         }
 
-        const decodedToken = jwt.verify(encodedToken, process.env.token_secret!);
+        const decodedToken = jwt.verify(encodedToken, process.env.TOKEN_SECRET!);
         
         // Ensure the decoded token has an 'id' and is a valid object
         if (typeof decodedToken === "object" && decodedToken !== null && "id" in decodedToken) {
