@@ -5,7 +5,7 @@
   --foreground: #171717;
 }
 
-@theme inline {
+:root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -23,4 +23,107 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+
+@layer base {
+  :root {
+    --color-bg-light: #f5f5dc;
+    --color-bg-dark: #003322;
+    --color-text-light: #213d14;
+    --color-text-dark: #dbead2;
+    --color-primary: #005740;
+    --color-accent: #98C44A;
+  }
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--color-text-light);
+  background-color: var(--color-bg-light);
+  transition: background-color 0.5s, color 0.5s;
+}
+
+.dark {
+  color: var(--color-text-dark);
+  background-color: var(--color-bg-dark);
+}
+
+.font-sans {
+  font-family: 'Poppins', sans-serif;
+}
+
+.text-gray-800 {
+  color: var(--color-text-light);
+}
+
+.dark .text-gray-100 {
+  color: var(--color-text-dark);
+}
+
+.bg-lime-50 {
+  background-color: var(--color-bg-light);
+}
+
+.dark .bg-emerald-950 {
+  background-color: var(--color-bg-dark);
+}
+
+.text-emerald-900 {
+  color: var(--color-primary);
+}
+
+.bg-lime-400 {
+  background-color: var(--color-accent);
+}
+
+.hover\:bg-lime-500:hover {
+  background-color: #8bb63a;
+}
+
+/* Custom Animations */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up-1 {
+  animation: slide-up 0.8s ease-out 0.2s backwards;
+}
+
+.animate-slide-up-2 {
+  animation: slide-up 0.8s ease-out 0.4s backwards;
+}
+
+.animate-slide-up-3 {
+  animation: slide-up 0.8s ease-out 0.6s backwards;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out backwards;
+}
+
+@keyframes pulse-icon {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.hover\:pulse-icon:hover {
+  animation: pulse-icon 1s infinite;
 }

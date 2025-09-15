@@ -1,6 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+// --- Component Prop Types ---
+// These interfaces define the expected properties for your components.
+// We've moved them here from the external @/types file to make the code
+// self-contained and eliminate the import error.
 
 interface FeatureCardProps {
   icon: string;
@@ -20,6 +29,76 @@ interface BenefitCardProps {
   description: string;
 }
 
+// --- Reusable UI Components ---
+// It's good practice to define these helper components before the main
+// Home component to make the code cleaner and easier to read.
+
+const FeatureCard: React.FC<FeatureCardProps> = ({
+  icon,
+  title,
+  description,
+}) => {
+  return (
+    <div className="bg-white rounded-3xl shadow-md p-8 flex flex-col items-center text-center transition-all duration-300 hover:shadow-2xl transform feature-card">
+      <div className="p-4 rounded-full bg-emerald-100 mb-6 transition-all duration-300 group-hover:bg-lime-200">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-16 w-16 text-emerald-600"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path d={icon} />
+        </svg>
+      </div>
+      <h3 className="text-2xl font-bold mb-3 text-emerald-700">{title}</h3>
+      <p className="text-gray-600 leading-relaxed">{description}</p>
+    </div>
+  );
+};
+
+const WorkflowStep: React.FC<WorkflowStepProps> = ({
+  number,
+  title,
+  description,
+}) => {
+  return (
+    <div className="flex items-start space-x-6 transform transition-transform duration-300 hover:scale-105 workflow-step">
+      <div className="w-16 h-16 flex items-center justify-center bg-emerald-600 text-white rounded-full text-2xl font-bold shadow-lg">
+        {number}
+      </div>
+      <div>
+        <h3 className="font-bold text-2xl text-emerald-700 mb-2">{title}</h3>
+        <p className="text-gray-600 leading-relaxed">{description}</p>
+      </div>
+    </div>
+  );
+};
+
+const BenefitCard: React.FC<BenefitCardProps> = ({
+  icon,
+  title,
+  description,
+}) => {
+  return (
+    <div className="bg-white p-8 rounded-3xl shadow-md flex flex-col items-center text-center transition-all duration-300 hover:shadow-2xl transform group benefit-card">
+      <div className="p-4 rounded-full bg-emerald-100 mb-6 transition-all duration-300 group-hover:bg-lime-200">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-16 w-16 text-emerald-600"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path d={icon} />
+        </svg>
+      </div>
+      <h3 className="text-2xl font-bold mb-4 text-emerald-700">{title}</h3>
+      <p className="text-gray-600 leading-relaxed">{description}</p>
+    </div>
+  );
+};
+
+// --- Main Home Component ---
+
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -30,31 +109,119 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    // Hero Section Animations
+    const tl = gsap.timeline();
+    tl.fromTo(
+      ".hero-bg",
+      { backgroundSize: "110%" },
+      { backgroundSize: "100%", duration: 2, ease: "power1.out" }
+    ).fromTo(
+      ".hero-content > *",
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, stagger: 0.3, duration: 1, ease: "power2.out" },
+      "-=1.5"
+    );
+
+    // Parallax Effect
+    gsap.to(".hero-bg", {
+      y: (index, target) => -1 * target.offsetHeight * 0.2, // Adjust multiplier for effect intensity
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".hero-bg",
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
+
+    // Workflow Section Animations
+    gsap.utils.toArray(".workflow-step").forEach((step, i) => {
+      gsap.from(step as Element, {
+        opacity: 0,
+        x: -100,
+        duration: 1,
+        ease: "power2.out",
+        delay: i * 0.2,
+        scrollTrigger: {
+          trigger: step as Element,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+      });
+    });
+
+    // Card Hover Animations with enhanced 3D
+    gsap.utils.toArray(".feature-card, .benefit-card").forEach((card) => {
+      gsap.from(card as Element, {
+        opacity: 0,
+        y: 50,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: card as Element,
+          start: "top 90%",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      (card as Element).addEventListener("mouseenter", () => {
+        gsap.to(card as Element, {
+          scale: 1.05,
+          rotationY: 5,
+          rotationX: 5,
+          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+          duration: 0.3,
+          ease: "power1.inOut",
+        });
+        gsap.to((card as Element).querySelector("svg") as Element, {
+          scale: 1.2,
+          yoyo: true,
+          repeat: -1,
+          duration: 0.5,
+          ease: "power1.inOut",
+        });
+      });
+      (card as Element).addEventListener("mouseleave", () => {
+        gsap.to(card as Element, {
+          scale: 1,
+          rotationY: 0,
+          rotationX: 0,
+          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+          duration: 0.3,
+          ease: "power1.inOut",
+        });
+        gsap.killTweensOf((card as Element).querySelector("svg") as Element);
+        gsap.to((card as Element).querySelector("svg") as Element, { scale: 1 });
+      });
+    });
+  }, []);
+
   return (
-    <div className="font-sans text-gray-800 dark:text-gray-100 bg-lime-50 dark:bg-emerald-950 min-h-screen">
+    <div className="font-sans text-gray-800 dark:text-gray-100 bg-lime-50 dark:bg-emerald-950 min-h-screen relative overflow-x-hidden">
+      {/* Hero Section */}
       <section
-        className="min-h-screen w-full flex flex-col justify-center items-center text-center px-4 relative pt-16"
+        className="hero-bg min-h-screen w-full flex flex-col justify-center items-center text-center px-4 relative pt-16"
         style={{
           backgroundImage: `
-      linear-gradient(to bottom, rgba(34, 197, 94, 0.7), rgba(34, 197, 94, 0.3)),
-      linear-gradient(to top, rgba(107, 114, 128, 0.3), rgba(16, 185, 129, 0.3)),
-      url('https://example.com/grass-and-farm.jpg')
-    `,
-          backgroundSize: "cover, cover, cover",
-          backgroundPosition: "center, center, center",
+            linear-gradient(to bottom, rgba(0, 87, 64, 0.7), rgba(0, 87, 64, 0.3)),
+            linear-gradient(to top, rgba(152, 196, 74, 0.3), rgba(0, 87, 64, 0.3)),
+            url('https://example.com/lush-green-farmland.jpg')
+          `,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          transformStyle: "preserve-3d",
         }}
       >
-
-
-        <div className="relative z-10 max-w-3xl">
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-4 text-white drop-shadow-lg animate-slide-up-1">
+        <div className="relative z-10 max-w-3xl hero-content">
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-4 text-white drop-shadow-lg">
             AgriTrace – Trust at Every Step
           </h1>
-          <p className="text-lg text-lime-100 drop-shadow-md animate-slide-up-2">
+          <p className="text-lg text-lime-100 drop-shadow-md">
             Empowering farmers and consumers with blockchain-backed
             transparency, fair pricing, and safer food supply chains.
           </p>
-          <div className="flex flex-wrap justify-center gap-4 mt-8 animate-slide-up-3">
+          <div className="flex flex-wrap justify-center gap-4 mt-8">
             <button
               onClick={() => scrollToSection("features")}
               className="px-8 py-4 bg-lime-400 text-emerald-900 font-bold rounded-full shadow-lg transition-all duration-300 hover:bg-lime-500 hover:scale-105 transform"
@@ -74,7 +241,7 @@ export default function Home() {
       {/* Features Section */}
       <section
         id="features"
-        className="py-24 px-4 max-w-7xl mx-auto bg-green-100 rounded-3xl shadow-2xl mt-16 animate-fade-in"
+        className="py-24 px-4 max-w-7xl mx-auto bg-green-100 rounded-3xl shadow-2xl mt-16"
       >
         <h2 className="text-4xl font-bold text-center text-emerald-800 mb-16">
           Features that Empower
@@ -101,12 +268,12 @@ export default function Home() {
       {/* How It Works Section with Flow Details */}
       <section
         id="how-it-works"
-        className="py-24 px-4 max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl mt-16 animate-fade-in"
+        className="py-24 px-4 max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl mt-16"
       >
         <h2 className="text-4xl font-bold text-center text-emerald-800 mb-16">
           How Our System Works
         </h2>
-        <div className="space-y-12">
+        <div className="space-y-12 relative">
           <WorkflowStep
             number="1"
             title="Farmer's Input"
@@ -138,7 +305,7 @@ export default function Home() {
       {/* Benefits Section */}
       <section
         id="benefits"
-        className="py-24 px-4 max-w-7xl mx-auto bg-gradient-to-r from-green-100 to-lime-100 rounded-3xl shadow-2xl mt-16 animate-fade-in"
+        className="py-24 px-4 max-w-7xl mx-auto bg-gradient-to-r from-green-100 to-lime-100 rounded-3xl shadow-2xl mt-16"
       >
         <h2 className="text-4xl font-bold text-center text-emerald-800 mb-16">
           Benefits for All
@@ -165,7 +332,7 @@ export default function Home() {
       {/* Testimonials Section */}
       <section
         id="testimonials"
-        className="py-24 px-4 max-w-7xl mx-auto bg-white rounded-3xl shadow-2xl mt-16 animate-fade-in"
+        className="py-24 px-4 max-w-7xl mx-auto bg-white rounded-3xl shadow-2xl mt-16"
       >
         <h2 className="text-4xl font-bold text-center text-emerald-800 mb-16">
           What Our Users Say
@@ -197,7 +364,7 @@ export default function Home() {
       {/* Contact Section */}
       <section
         id="contact"
-        className="py-24 px-4 bg-gradient-to-r from-emerald-700 to-green-700 text-white text-center rounded-3xl shadow-2xl mt-16 mb-16 animate-fade-in"
+        className="py-24 px-4 bg-gradient-to-r from-emerald-700 to-green-700 text-white text-center rounded-3xl shadow-2xl mt-16 mb-16"
       >
         <h2 className="text-4xl font-bold mb-8">Join the Movement</h2>
         <p className="mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -279,67 +446,3 @@ export default function Home() {
     </div>
   );
 }
-
-export const FeatureCard: React.FC<FeatureCardProps> = ({
-  icon,
-  title,
-  description,
-}) => {
-  return (
-    <div className="bg-white rounded-3xl shadow-md p-8 flex flex-col items-center text-center transition-all duration-300 hover:shadow-2xl hover:scale-105 transform">
-      <div className="p-4 rounded-full bg-emerald-100 mb-6 transition-all duration-300 group-hover:bg-lime-200">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-16 w-16 text-emerald-600"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
-          <path d={icon} />
-        </svg>
-      </div>
-      <h3 className="text-2xl font-bold mb-3 text-emerald-700">{title}</h3>
-      <p className="text-gray-600 leading-relaxed">{description}</p>
-    </div>
-  );
-};
-
-const WorkflowStep: React.FC<WorkflowStepProps> = ({
-  number,
-  title,
-  description,
-}) => {
-  return (
-    <div className="flex items-start space-x-6 transform transition-transform duration-300 hover:scale-105">
-      <div className="w-16 h-16 flex items-center justify-center bg-emerald-600 text-white rounded-full text-2xl font-bold shadow-lg">
-        {number}
-      </div>
-      <div>
-        <h3 className="font-bold text-2xl text-emerald-700 mb-2">{title}</h3>
-        <p className="text-gray-600 leading-relaxed">{description}</p>
-      </div>
-    </div>
-  );
-};
-
-const BenefitCard: React.FC<BenefitCardProps> = ({
-  icon,
-  title,
-  description,
-}) => {
-  return (
-    <div className="bg-white p-8 rounded-3xl shadow-md flex flex-col items-center text-center transition-all duration-300 hover:shadow-2xl hover:scale-105 transform group">
-      <div className="p-4 rounded-full bg-emerald-100 mb-6 transition-all duration-300 group-hover:bg-lime-200">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-16 w-16 text-emerald-600"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
-          <path d={icon} />
-        </svg>
-      </div>
-      <h3 className="text-2xl font-bold mb-4 text-emerald-700">{title}</h3>
-      <p className="text-gray-600 leading-relaxed">{description}</p>
-    </div>
-  );
-};
