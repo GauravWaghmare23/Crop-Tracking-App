@@ -263,7 +263,7 @@ export default function HomeContent() {
             <p className="text-lg font-semibold uppercase text-[#51CC6E] mb-3">Blockchain for a Greener Future</p>
           </div>
           <h1 className="hero-content-item text-5xl md:text-7xl font-extrabold mb-6 text-[#1A1A1A]">
-            AgriTrace is <span className="text-[#51CC6E]">Trust</span>
+            Nirikshak is <span className="text-[#51CC6E]">Trust</span>
           </h1>
           <p className="hero-content-item text-xl text-gray-600 max-w-2xl mx-auto">
             Empowering farmers and consumers with **transparent** and **fair** food supply chains, secured by blockchain technology.
