@@ -16,10 +16,10 @@ export async function POST() {
 
         return response;
 
-    } catch (error:any) {
+    } catch (error: unknown) {
         return NextResponse.json({
             message: "Error during logout",
-            error: error.message
+            error: (error as Error).message
         }, { status: 500 });
     }
 }

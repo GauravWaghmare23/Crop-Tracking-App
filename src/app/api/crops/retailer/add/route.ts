@@ -11,7 +11,7 @@ export async function PUT(request: NextRequest) {
         if (!encodedToken) {
             return NextResponse.json({ message: "Unauthorized: No token provided" }, { status: 401 });
         }
-        const decodedToken : any = jwt.verify(encodedToken, process.env.TOKEN_SECRET!);
+        const decodedToken = jwt.verify(encodedToken, process.env.TOKEN_SECRET || 'default_secret') as any;
 
         // find user
         const user = await User.findById(decodedToken.id);
@@ -35,7 +35,7 @@ export async function PUT(request: NextRequest) {
 
         return NextResponse.json({ message: "Retailer added successfully" }, { status: 200 });
 
-    } catch (error) {
-        return NextResponse.json({message: "Internal Server Error", error}, {status: 500})
+    } catch (error: unknown) {
+        return NextResponse.json({message: "Internal Server Error", error: (error as Error).message}, {status: 500})
     }
 }

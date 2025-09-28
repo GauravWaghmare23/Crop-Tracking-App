@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
         if(!token){
             return NextResponse.json({message: "Unauthorized: No token provided"}, {status: 401});
         }
-        const decodedToken: any = jwt.verify(token, process.env.TOKEN_SECRET!);
+        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET || 'default_secret') as any;
 
         // Find the user by ID
 
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
         const crops = await Crop.find({retailerUsername: user._id});
         return NextResponse.json({crops}, {status: 200});
 
-    } catch (error) {
-        return NextResponse.json({message: "Internal Server Error", error}, {status: 500})
+    } catch (error: unknown) {
+        return NextResponse.json({message: "Internal Server Error", error: (error as Error).message}, {status: 500})
     }
 }

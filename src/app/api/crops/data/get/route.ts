@@ -23,8 +23,8 @@ export async function GET(request: NextRequest) {
         }
 
         return NextResponse.json({ crops }, { status: 200 });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("API GET Error:", error);
-        return NextResponse.json({ message: "Internal Server Error", error: error.message }, { status: 500 });
+        return NextResponse.json({ message: "Internal Server Error", error: (error as Error).message }, { status: 500 });
     }
 }

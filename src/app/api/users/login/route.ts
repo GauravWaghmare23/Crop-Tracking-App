@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         response.cookies.set("token",token,{ httpOnly: true});
         console.log(response)
         return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Login API Error:', error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }

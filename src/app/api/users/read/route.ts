@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
         } else {
             return NextResponse.json({ message: "Invalid token structure" }, { status: 400 });
         }
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error fetching single user:", error);
         // Handle token verification errors or other internal errors
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });

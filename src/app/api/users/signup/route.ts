@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
             { message: 'User created successfully' },
             { status: 201 }
         );
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Registration API Error:', error); // ✅ Use console.error and provide more context
 
         // Check for Mongoose validation errors

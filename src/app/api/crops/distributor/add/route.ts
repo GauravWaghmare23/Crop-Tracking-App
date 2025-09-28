@@ -14,7 +14,7 @@ export async function PUT(request: NextRequest) {
         if (!token) {
             return NextResponse.json({ message: "Unauthorized: No token provided" }, { status: 401 });
         }
-        const decodedToken: any = jwt.verify(token, process.env.TOKEN_SECRET!);
+        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET || 'default_secret') as any;
 
         // Find the user by ID
         user = await User.findById(decodedToken.id);
@@ -76,7 +76,7 @@ export async function PUT(request: NextRequest) {
         console.log("Crop saved successfully");
         return NextResponse.json({ message: "Distributor added successfully" }, { status: 200 });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error in distributor add route:", error);
         console.error("Request data:", {
             cropId,
@@ -88,6 +88,6 @@ export async function PUT(request: NextRequest) {
             distributorDeliveryNumber
         });
         console.error("User ID:", user._id);
-        return NextResponse.json({ message: "Failed to add distributor", error: error.message || error.toString() }, { status: 500 });
+        return NextResponse.json({ message: "Failed to add distributor", error: (error as Error).message }, { status: 500 });
     }
 }

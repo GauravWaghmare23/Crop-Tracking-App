@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: "Unauthorized: No token provided" }, { status: 401 });
         }
 
-        const decodedToken: any = jwt.verify(token, process.env.TOKEN_SECRET!);
+        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET || 'default_secret') as any;
 
         // Find the user by ID
         const farmer = await User.findById(decodedToken.id);
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
             { message: "Crop added successfully", success: true, crop: newCrop },
             { status: 201 }
         );
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error adding crop:", error);
         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     }

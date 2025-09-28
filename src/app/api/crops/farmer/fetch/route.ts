@@ -12,7 +12,7 @@ export async function GET(request:NextRequest) {
             return NextResponse.json({ message: "Unauthorized: No token provided" }, { status: 401 });
         }
 
-        const decodedToken: any = jwt.verify(token, process.env.TOKEN_SECRET!);
+        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET || 'default_secret') as any;
 
         // Find the user by ID
         const farmer = await User.findById(decodedToken.id);
@@ -22,7 +22,7 @@ export async function GET(request:NextRequest) {
 
         const crops = await Crop.find({ farmerNumber: farmer._id });
         return NextResponse.json({crops}, {status:200});
-    } catch (error) {
-        return NextResponse.json({message:"Failed to fetch crops", error}, {status:500});
+    } catch (error: unknown) {
+        return NextResponse.json({message:"Failed to fetch crops", error: (error as Error).message}, {status:500});
     }
 }
