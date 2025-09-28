@@ -5,8 +5,6 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import jsQR from "jsqr";
 import QRCode from "react-qr-code";
-
-// ✅ Helper function to download QR code as PNG
 import { generateDownloadableQrCode } from "@/helpers/generateQR";
 
 interface Crop {
@@ -67,7 +65,6 @@ export default function Page({ params }: { params: { username: string } }) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = () => {
       const img = new Image();
@@ -77,7 +74,6 @@ export default function Page({ params }: { params: { username: string } }) {
         canvas.height = img.height;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
-
         ctx.drawImage(img, 0, 0);
         const imageData = ctx.getImageData(0, 0, img.width, img.height);
         const code = jsQR(imageData.data, img.width, img.height);
@@ -119,174 +115,177 @@ export default function Page({ params }: { params: { username: string } }) {
     }
   };
 
-  const tableHeaderClass =
-    "px-6 py-3 text-left text-xs font-medium text-purple-100 uppercase tracking-wider";
-  const tableDataClass = "px-6 py-4 whitespace-nowrap text-sm text-stone-200";
-
   return (
-    <div className="bg-stone-900 min-h-screen p-8 font-sans text-purple-100">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold text-center mb-12 text-purple-300 drop-shadow-lg">
-          Retailer Dashboard
+    <div className="min-h-screen bg-gradient-to-b from-emerald-100 to-emerald-50">
+      <div className="px-6 pt-8 pb-2">
+        <h1 className="text-5xl font-extrabold text-emerald-900 leading-none" style={{letterSpacing: "-1px"}}>
+          Retailer's Ledger
         </h1>
-
-        {/* QR Code Scanner Section */}
-        <div className="bg-stone-800 rounded-lg shadow-xl p-6 mb-12 border border-purple-700">
-          <h2 className="text-2xl font-bold mb-6 text-purple-200">Scan Crop QR Code</h2>
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-center text-stone-400">
-              Upload a QR code image to get the Crop ID.
-            </p>
+        <p className="text-emerald-900/80 text-lg mt-2 mb-4">
+          Update crop sale records, scan QR tags, and export your handled entries.
+        </p>
+      </div>
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 p-4">
+        {/* Left side - QR & Update Form */}
+        <div>
+          {/* QR Scanner Card */}
+          <div className="bg-white/95 border border-emerald-200 rounded-2xl shadow-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold mb-4 text-emerald-900">Scan Crop QR</h2>
+            <p className="mb-4 text-emerald-800/80">Upload a QR image to get Crop ID below.</p>
             <input
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              className="text-white bg-stone-700 rounded-md p-2"
+              className="block mb-4 px-3 py-2 rounded-lg border border-emerald-200 bg-slate-100 focus:border-emerald-400 focus:outline-none"
             />
             {scannedResult && (
-              <div className="mt-4 p-4 bg-stone-700 rounded-md shadow-inner text-center">
-                <p className="font-bold text-purple-300">Scanned Crop ID:</p>
-                <p className="break-all">{scannedResult}</p>
+              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-emerald-900 break-all mb-4 text-center">
+                <span className="font-bold">Scanned Crop ID:</span>
+                <div className="text-xs mt-1">{scannedResult}</div>
               </div>
             )}
           </div>
-        </div>
-
-        {/* Update Crop Section */}
-        <div className="bg-stone-800 rounded-lg shadow-xl p-6 mb-12 border border-purple-700">
-          <h2 className="text-2xl font-bold mb-6 text-purple-200">Update Crop Details</h2>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
+          {/* Update Crop Details */}
+          <div className="bg-white/95 border border-emerald-200 rounded-2xl shadow-lg p-8">
+            <h2 className="text-2xl font-bold mb-4 text-emerald-900">Update Crop Sale</h2>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Crop ID</label>
+                <label className="text-sm font-semibold text-emerald-800 block mb-1">Crop ID</label>
                 <input
                   type="text"
                   name="cropId"
                   value={formData.cropId}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-stone-700 border border-stone-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 transition duration-150"
-                  required
                   readOnly
+                  required
+                  className="w-full rounded-md border border-emerald-200 px-3 py-2 bg-slate-100 text-brown-700"
+                  style={{ color: "#884800" }}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Retailer Price</label>
+                <label className="text-sm font-semibold text-emerald-800 block mb-1">Retailer Price</label>
                 <input
                   type="number"
                   name="retailerPrice"
                   value={formData.retailerPrice}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-stone-700 border border-stone-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 transition duration-150"
                   required
+                  min={0}
+                  className="w-full rounded-md border border-emerald-200 px-3 py-2 bg-slate-100"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Retailer Date</label>
+                <label className="text-sm font-semibold text-emerald-800 block mb-1">Retailer Date</label>
                 <input
                   type="date"
                   name="retailerDate"
                   value={formData.retailerDate}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-stone-700 border border-stone-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 transition duration-150"
                   required
+                  className="w-full rounded-md border border-emerald-200 px-3 py-2 bg-slate-100"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Retailer Location</label>
+                <label className="text-sm font-semibold text-emerald-800 block mb-1">Retailer Location</label>
                 <input
                   type="text"
                   name="retailerLocation"
                   value={formData.retailerLocation}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-stone-700 border border-stone-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 transition duration-150"
                   required
+                  className="w-full rounded-md border border-emerald-200 px-3 py-2 bg-slate-100"
                 />
               </div>
-            </div>
-            <div className="flex items-end justify-center mt-6">
               <button
                 type="submit"
-                className="px-6 py-3 font-bold text-lg rounded-full bg-purple-700 hover:bg-purple-600 transition-colors duration-200 border-2 border-purple-900 shadow-md hover:shadow-lg"
+                className="mt-4 py-2 px-4 text-lg font-semibold rounded-lg bg-emerald-600 text-white shadow hover:bg-emerald-700 transition"
               >
-                Submit
+                Update Ledger
               </button>
-            </div>
-            {formStatus.message && (
-              <p
-                className={`mt-4 col-span-full text-center ${
-                  formStatus.type === "success" ? "text-green-400" : "text-red-400"
-                }`}
-              >
-                {formStatus.message}
-              </p>
-            )}
-          </form>
+              {formStatus.message && (
+                <div className={`mt-2 text-center font-semibold ${formStatus.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
+                  {formStatus.message}
+                </div>
+              )}
+            </form>
+          </div>
         </div>
-
-        {/* Retailer Crop Ledger Section */}
-        <div className="bg-stone-800 rounded-lg shadow-xl p-6 border border-purple-700">
-          <h2 className="text-2xl font-bold mb-6 text-purple-200">Handled Crops</h2>
+        {/* Right side - Crops Cards Grid */}
+        <div className="bg-white/95 border border-emerald-200 rounded-2xl shadow-lg p-8 h-full flex flex-col">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-emerald-900">Your Sales</h2>
+            <button
+              onClick={fetchRetailerCrops}
+              className="px-4 py-1 text-md font-bold bg-emerald-600 text-white rounded hover:bg-emerald-700"
+              type="button"
+            >
+              Refresh
+            </button>
+          </div>
           {loading ? (
-            <p className="text-center text-stone-400">Loading crops...</p>
+            <p className="text-center text-emerald-800/70">Loading crops...</p>
           ) : retailerCrops.length === 0 ? (
-            <p className="text-center text-stone-400">No crops found.</p>
+            <p className="text-center text-emerald-800/70">No sales found.</p>
           ) : (
-            <div className="overflow-x-auto rounded-lg">
-              <table className="min-w-full divide-y divide-stone-700">
-                <thead className="bg-stone-700">
-                  <tr>
-                    <th className={tableHeaderClass}>Crop ID</th>
-                    <th className={tableHeaderClass}>Crop Name</th>
-                    <th className={tableHeaderClass}>Quantity</th>
-                    <th className={tableHeaderClass}>Price</th>
-                    <th className={tableHeaderClass}>Retailer Price</th>
-                    <th className={tableHeaderClass}>Retailer Date</th>
-                    <th className={tableHeaderClass}>Retailer Location</th>
-                    <th className={tableHeaderClass}>QR Code</th>
-                    <th className={tableHeaderClass}>Action</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-stone-800 divide-y divide-stone-700">
-                  {retailerCrops.map((Crops) => (
-                    <tr key={Crops._id.$oid} className="hover:bg-stone-700 transition-colors duration-150">
-                      <td className={tableDataClass}>{Crops.cropId}</td>
-                      <td className={tableDataClass}>{Crops.cropName}</td>
-                      <td className={tableDataClass}>{Crops.quantity} kg</td>
-                      <td className={tableDataClass}>${Crops.price}</td>
-                      <td className={tableDataClass}>${Crops.retailerPrice}</td>
-                      <td className={tableDataClass}>
-                        {new Date(Crops.retailerDate.$date).toLocaleDateString()}
-                      </td>
-                      <td className={tableDataClass}>{Crops.retailerLocation}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <div
-                          id={`qrcode-${Crops.cropId}`}
-                          ref={(el) => {
-                            // Corrected code: no return value from the ref callback
-                            qrRefs.current[Crops.cropId] = el;
-                          }}
-                          className="inline-block p-2 bg-stone-900 rounded-md"
-                        >
-                          <QRCode value={Crops.cropId} size={64} />
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <button
-                          onClick={() => generateDownloadableQrCode(Crops.cropId)}
-                          className="px-4 py-2 font-bold text-sm text-white bg-amber-700 rounded-full hover:bg-amber-600 transition-colors duration-200"
-                        >
-                          Download
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="grid md:grid-cols-2 gap-5 overflow-y-auto max-h-[60vh] pr-2">
+              {retailerCrops.map((Crops) => (
+                <div
+                  key={Crops._id.$oid}
+                  className="bg-yellow-50 border border-yellow-200 rounded-xl p-5 shadow space-y-2 flex flex-col mb-2"
+                >
+                  <div className="flex items-start justify-between">
+                    <span>
+                      <span className="font-bold text-emerald-800 text-xl">{Crops.cropName}</span>
+                      <span className="block text-brown-700 text-xs font-mono mt-1" style={{ color: "#884800" }}>
+                        ID: {Crops.cropId}
+                      </span>
+                    </span>
+                    <div className="text-right">
+                      <span className="block text-base font-semibold text-emerald-700">
+                        Qty: <span className="font-bold">{Crops.quantity}</span> <span className="text-xs">kg</span>
+                      </span>
+                      <span className="block text-base font-semibold text-emerald-700">
+                        Price: <span className="font-bold">{Crops.price}</span>
+                      </span>
+                      <span className="block text-base font-semibold text-teal-800">
+                        R.Price: <span className="font-bold">{Crops.retailerPrice}</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-gray-700 mb-2 text-sm">
+                    <span className="block">Location: {Crops.retailerLocation}</span>
+                    <span>
+                      Harvest: {new Date(Crops.harvestDate.$date).toLocaleDateString()}
+                      <br />
+                      Expiry: {new Date(Crops.expiryDate.$date).toLocaleDateString()}
+                      <br />
+                      Sale: {new Date(Crops.retailerDate.$date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4 mt-2">
+                    <div
+                      id={`qrcode-${Crops.cropId}`}
+                      ref={(el) => {
+                        qrRefs.current[Crops.cropId] = el;
+                      }}
+                      className="bg-white p-2 rounded shadow"
+                    >
+                      <QRCode value={Crops.cropId} size={64} />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => generateDownloadableQrCode(Crops.cropId)}
+                      className="px-3 py-1 bg-emerald-700 text-white text-sm rounded hover:bg-emerald-800"
+                    >
+                      Download
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
       </div>
-
       {/* Hidden Canvas for QR Download */}
       <canvas id="qr-canvas" className="hidden"></canvas>
     </div>

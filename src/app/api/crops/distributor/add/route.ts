@@ -53,6 +53,7 @@ export async function PUT(request: NextRequest) {
         }
         console.log("Crop found:", crop._id);
 
+   
         crop.distributorUsername = user._id;
         crop.distributorPrice = parseFloat(distributorPrice);
         crop.distributorDate = new Date(distributorDate);

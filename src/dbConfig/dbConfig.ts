@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 
 export async function connect() {
     try {
-        await mongoose.connect(process.env.MONGODB_URL!);
+        const mongoUrl = process.env.MONGODB_URL || 'mongodb+srv://gauravwaghmare:Nirvana95032@cluster0.unepsiq.mongodb.net/mynewdatabase?retryWrites=true&w=majority&appName=Cluster0';
+        await mongoose.connect(mongoUrl);
         const connection = mongoose.connection;
 
         connection.on('connected', () => {
@@ -17,7 +18,7 @@ export async function connect() {
     } catch (error) {
         console.log('Something goes wrong!');
         console.log(error);
-        
+
     }
 
 

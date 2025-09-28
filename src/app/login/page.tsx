@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import axios from "axios"; // Import axios
+import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
@@ -22,21 +22,17 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setMessage(""); // Clear any previous messages
+    setMessage("");
     setIsLoading(true);
 
     try {
-      // Use axios to make a POST request to the login API endpoint
       const response = await axios.post("/api/users/login", formData);
       setMessage("Login successful!");
       console.log("User logged in:", response.data);
-      // Here you would typically handle the login token/session
-      
-      // Redirect to the homepage after a brief delay to show the message
+
       setTimeout(() => {
         router.push("/");
       }, 1000);
-
     } catch (error: any) {
       console.error(
         "Login failed:",
@@ -51,70 +47,103 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-2xl font-semibold text-center mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-100 to-emerald-50 p-6">
+      <div className="w-full max-w-md bg-white bg-opacity-90 rounded-2xl shadow-xl p-10">
+        <h1 className="text-center text-3xl font-extrabold text-emerald-900 mb-8 select-none">
           Log in to Your Account
         </h1>
+
         {message && (
-          <div className={`p-3 mb-4 rounded-md text-sm text-center ${message.includes("successful") ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+          <div
+            className={`p-4 mb-6 rounded-md text-center font-semibold ${
+              message.includes("successful")
+                ? "bg-emerald-200 text-emerald-800"
+                : "bg-red-200 text-red-700"
+            } transition-colors duration-300`}
+            role="alert"
+          >
             {message}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <InputField
+            label="Email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            autoComplete="email"
+          />
+          <InputField
+            label="Password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            autoComplete="current-password"
+          />
 
           <button
             type="submit"
-            className="w-full bg-green-600 text-white font-medium rounded px-4 py-2 hover:bg-green-700 transition"
             disabled={isLoading}
+            className="w-full py-3 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-400 focus:ring-opacity-50 transition-colors duration-300"
           >
             {isLoading ? "Logging In..." : "Login"}
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-600 mt-4">
+        <p className="mt-6 text-center text-emerald-800 select-none">
           Don't have an account?{" "}
-          <a href="/signup" className="text-green-600 hover:underline">
+          <a
+            href="/signup"
+            className="text-emerald-600 hover:underline hover:text-emerald-700 transition-colors duration-200"
+          >
             Sign up
           </a>
         </p>
       </div>
+    </div>
+  );
+}
+
+function InputField({
+  label,
+  name,
+  type = "text",
+  value,
+  onChange,
+  required = false,
+  autoComplete,
+}: {
+  label: string;
+  name: string;
+  type?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean;
+  autoComplete?: string;
+}) {
+  return (
+    <div>
+      <label
+        htmlFor={name}
+        className="block text-sm font-semibold text-emerald-900 mb-1 select-none"
+      >
+        {label}
+      </label>
+      <input
+        id={name}
+        name={name}
+        type={type}
+        value={value}
+        onChange={onChange}
+        required={required}
+        autoComplete={autoComplete}
+        className="w-full rounded-md border border-emerald-300 px-3 py-2 bg-white text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-shadow duration-200"
+      />
     </div>
   );
 }

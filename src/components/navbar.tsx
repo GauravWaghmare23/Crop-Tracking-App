@@ -49,43 +49,91 @@ function Navbar() {
   }, [router, pathname]);
 
   return (
-    <nav className="bg-emerald-900 text-white shadow-2xl sticky top-0 z-50 transition-all duration-300">
+    <nav className="bg-emerald-900 text-lime-300 shadow-2xl sticky top-0 z-50 backdrop-blur-sm backdrop-saturate-150 transition-all duration-300">
       <div className="max-w-screen-xl mx-auto flex flex-wrap items-center justify-between p-4">
         {/* Logo */}
-        <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <span className="text-4xl animate-pulse">🌱</span>
-          <span className="text-2xl font-extrabold text-lime-300 hover:text-white transition-colors duration-300">AgriTrace</span>
+        <a
+          href="/"
+          className="flex items-center space-x-3 rtl:space-x-reverse select-none"
+          aria-label="AgriTrace Home"
+        >
+          <span className="text-4xl animate-pulse select-none">🌱</span>
+          <span className="text-2xl font-extrabold text-lime-400 hover:text-lime-200 transition-colors duration-300">
+            AgriTrace
+          </span>
         </a>
 
         {/* Menu Toggle (Mobile) */}
         <button
           onClick={toggleMenu}
           type="button"
-          className="inline-flex items-center p-2 w-10 h-10 text-lime-200 rounded-lg hover:bg-emerald-800 md:hidden focus:outline-none focus:ring-2 focus:ring-lime-300 transition-all duration-200"
+          className="inline-flex items-center p-2 w-10 h-10 text-lime-400 rounded-lg hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-lime-300 md:hidden transition-all duration-200"
           aria-controls="navbar-default"
           aria-expanded={isOpen ? "true" : "false"}
+          aria-label="Toggle menu"
         >
-          <span className="sr-only">Open main menu</span>
-          <svg className="w-6 h-6" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+          {!isOpen ? (
+            <svg
+              className="w-6 h-6"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          ) : (
+            /* Close Icon */
+            <svg
+              className="w-6 h-6"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          )}
         </button>
 
         {/* Navigation Links */}
-        <div className={`${isOpen ? "block" : "hidden"} w-full md:flex md:items-center md:w-auto`} id="navbar-default">
+        <div
+          className={`${
+            isOpen ? "block" : "hidden"
+          } w-full md:flex md:items-center md:w-auto`}
+          id="navbar-default"
+        >
           <ul className="flex flex-col md:flex-row md:space-x-6 mt-4 md:mt-0 bg-emerald-800 md:bg-transparent border border-emerald-700 rounded-lg md:border-0 p-4 md:p-0">
             <NavItem label="Home" onClick={() => router.push("/")} />
-            
+
             {loading ? (
-              <li className="py-2 px-3 text-lime-300">Loading...</li>
+              <li className="py-2 px-3 text-lime-400">Loading...</li>
             ) : user ? (
               <>
-                <NavItem label="Dashboard" onClick={() => router.push(`/${user.role}Dashboard/${user.username}`)} />
-                <li className="py-2 px-3 text-lime-200 font-medium">Hello, {user.username}</li>
+                <NavItem
+                  label="Dashboard"
+                  onClick={() =>
+                    router.push(`/${user.role}Dashboard/${user.username}`)
+                  }
+                />
+                <li className="py-2 px-3 text-lime-300 font-medium select-text">
+                  Hello, {user.username}
+                </li>
                 <li>
                   <button
                     onClick={handleLogout}
                     className="px-4 py-2 text-sm bg-lime-600 hover:bg-lime-700 rounded-full transition-colors duration-200"
+                    aria-label="Logout"
                   >
                     Logout
                   </button>
@@ -94,8 +142,16 @@ function Navbar() {
             ) : (
               <>
                 <NavItem label="Scan" onClick={() => router.push("/allData")} />
-                <NavItem label="Login" onClick={() => router.push("/login")} isButton />
-                <NavItem label="Sign Up" onClick={() => router.push("/signup")} isButton />
+                <NavItem
+                  label="Login"
+                  onClick={() => router.push("/login")}
+                  isButton
+                />
+                <NavItem
+                  label="Sign Up"
+                  onClick={() => router.push("/signup")}
+                  isButton
+                />
               </>
             )}
           </ul>
@@ -105,12 +161,24 @@ function Navbar() {
   );
 }
 
-function NavItem({ label, onClick, isButton = false }: { label: string; onClick: () => void; isButton?: boolean }) {
+function NavItem({
+  label,
+  onClick,
+  isButton = false,
+}: {
+  label: string;
+  onClick: () => void;
+  isButton?: boolean;
+}) {
   return (
     <li>
       <button
         onClick={onClick}
-        className={`block w-full text-left py-2 px-4 rounded-lg transition-all duration-200 hover:bg-lime-700 hover:text-white ${isButton ? 'bg-lime-600 hover:bg-lime-700 text-white' : 'hover:text-lime-300 text-white'}`}
+        className={`block w-full text-left py-2 px-4 rounded-lg transition-all duration-200 ${
+          isButton
+            ? "bg-lime-600 text-white hover:bg-lime-700"
+            : "hover:text-lime-300 text-lime-300"
+        }`}
       >
         {label}
       </button>
