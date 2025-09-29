@@ -11,7 +11,7 @@ export async function PUT(request: NextRequest) {
         if (!encodedToken) {
             return NextResponse.json({ message: "Unauthorized: No token provided" }, { status: 401 });
         }
-        const decodedToken = jwt.verify(encodedToken, process.env.TOKEN_SECRET || 'default_secret') as any;
+        const decodedToken = jwt.verify(encodedToken, process.env.TOKEN_SECRET || 'default_secret') as { id: string };
 
         // find user
         const user = await User.findById(decodedToken.id);

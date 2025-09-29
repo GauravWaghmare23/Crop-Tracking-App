@@ -6,7 +6,7 @@ import Crop from "@/model/cropModel";
 
 export async function PUT(request: NextRequest) {
     let cropId = "", distributorPrice = "", distributorDate = "", distributorLocation = "", distributorDeliveryName = "", distributorPhone = "", distributorDeliveryNumber = "";
-    let user: any = null;
+    let user: InstanceType<typeof User> | null = null;
 
     try {
         await connect();
@@ -14,7 +14,7 @@ export async function PUT(request: NextRequest) {
         if (!token) {
             return NextResponse.json({ message: "Unauthorized: No token provided" }, { status: 401 });
         }
-        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET || 'default_secret') as any;
+        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET || 'default_secret') as { id: string };
 
         // Find the user by ID
         user = await User.findById(decodedToken.id);

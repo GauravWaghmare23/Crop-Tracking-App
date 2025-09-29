@@ -1,63 +1,39 @@
-# TODO: Fix All Code Errors in the Application
+# TODO: Fix Next.js Build Errors
 
-## Steps to Complete
+## Overview
+Fix ESLint errors causing build failure on Netlify. Errors include no-explicit-any, no-unused-vars, no-unescaped-entities, no-html-link-for-pages, no-sync-scripts, exhaustive-deps.
 
-- [x] 1. Remove cropId as required field from user model
-- [x] 2. Fix Signup Page - Fix JSX errors and input handlers
-- [x] 3. Fix Farmer Crop Add API - Remove cropId assignment to user
-- [x] 4. Fix Farmer Dashboard - Generate UUID for cropId
-- [x] 5. Verify Login API
-- [x] 6. Verify Logout API
-- [x] 7. Verify User Read API
-- [x] 8. Verify Distributor Crop APIs
-- [x] 9. Verify Retailer Crop APIs
-- [x] 10. Verify QR Helper
-- [x] 11. Verify AllData Page
-- [x] 12. Verify Crops Data Get API
-- [ ] 13. Test Signup Flow
-- [ ] 14. Test Login Flow
-- [ ] 15. Test Crop Addition Flow
-- [ ] 16. Test Crop Fetch Flow
-- [ ] 17. Test QR Code Generation
-- [ ] 18. Test AllData QR Scanning
+## Files to Fix
 
-## Information Gathered
+### src/app/allData/page.tsx
+- [x] Change `interface CropData { [key: string]: any; }` to `[key: string]: unknown;`
+- [x] Remove unused `file` state variable
+- [x] Remove unused `err` in scanImage catch block
+- [x] Change `catch (err: any)` to `catch (error: unknown)` and handle error properly
+- [x] Remove synchronous `<script src="https://cdn.tailwindcss.com"></script>` tag
 
-- User model has cropId as required, causing signup failures
-- Signup page has potential JSX issues
-- Farmer crop add API assigns cropId to user, which is incorrect
-- Farmer dashboard needs UUID generation for cropId
-- APIs for login, logout, read, distributor, retailer, QR helper need verification
-- Testing required for all flows
+### API Routes (all similar)
+- [x] src/app/api/crops/distributor/add/route.ts: Change `let user: any = null;` to `let user: User | null = null;` (import User type), `decodedToken as any` to `as { id: string }`, `catch (error: unknown)`
+- [ ] src/app/api/crops/distributor/fetch/route.ts: Same as above
+- [ ] src/app/api/crops/farmer/add/route.ts: Same
+- [ ] src/app/api/crops/farmer/fetch/route.ts: Same
+- [ ] src/app/api/crops/retailer/add/route.ts: Same
+- [ ] src/app/api/crops/retailer/fetch/route.ts: Same
 
-## Plan
+### Page Components
+- [ ] src/app/distributorDashboard/[username]/page.tsx: Remove unused `AnimatePresence`, change any types, escape `'`
+- [ ] src/app/farmerDashboard/[username]/page.tsx: Change any types, escape `'`
+- [ ] src/app/login/page.tsx: Change any type, escape `'`
+- [ ] src/app/page.tsx: Escape all `"` in JSX
+- [ ] src/app/retailerDashboard/[username]/page.tsx: Remove unused `username`, add missing dependency to useEffect, change any types, escape `'`
+- [ ] src/app/signup/page.tsx: Change any type
 
-- Edit userModel.js to remove cropId requirement
-- Edit signup page to fix any JSX/input handler issues
-- Edit farmer add API to remove cropId assignment
-- Edit farmer dashboard to generate UUID for cropId
-- Verify all APIs are correct
-- Test all flows to ensure no errors
+### Components
+- [ ] src/components/navbar.tsx: Import `Link` from 'next/link', replace `<a href="/">` with `<Link href="/">`
 
-## Dependent Files
-
-- src/model/userModel.js
-- src/app/signup/page.tsx
-- src/app/api/crops/farmer/add/route.ts
-- src/app/farmerDashboard/[username]/page.tsx
-- src/app/api/users/login/route.ts
-- src/app/api/users/logout/route.ts
-- src/app/api/users/read/route.ts
-- src/app/api/crops/distributor/add/route.ts
-- src/app/api/crops/distributor/fetch/route.ts
-- src/app/api/crops/retailer/add/route.ts
-- src/app/api/crops/retailer/fetch/route.ts
-- src/helpers/generateQR.ts
-- src/app/allData/page.tsx
-- src/app/api/crops/data/get/route.ts
+### Models
+- [ ] src/model/userModel.js: Remove unused `mongoose` and `type` imports
 
 ## Followup Steps
-
-- After fixes, test signup, login, crop addition, fetch, QR generation
-- Ensure no runtime errors
-- Verify all APIs work correctly
+- [ ] Run `npm run build` to verify all errors are fixed
+- [ ] Test the app locally if needed

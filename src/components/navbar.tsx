@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import axios from "axios";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -52,7 +53,7 @@ function Navbar() {
     <nav className="bg-emerald-900 text-lime-300 shadow-2xl sticky top-0 z-50 backdrop-blur-sm backdrop-saturate-150 transition-all duration-300">
       <div className="max-w-screen-xl mx-auto flex flex-wrap items-center justify-between p-4">
         {/* Logo */}
-        <a
+        <Link
           href="/"
           className="flex items-center space-x-3 rtl:space-x-reverse select-none"
           aria-label="AgriTrace Home"
@@ -61,7 +62,7 @@ function Navbar() {
           <span className="text-2xl font-extrabold text-lime-400 hover:text-lime-200 transition-colors duration-300">
             <span className="text-white">Agri</span><span className="text-[#51CC6E]">Trace</span>
           </span>
-        </a>
+        </Link>
 
         {/* Menu Toggle (Mobile) */}
         <button

@@ -37,7 +37,7 @@ const ScanIcon: React.FC<ScanIconProps> = ({ className }) => (
 );
 
 interface CropData {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const getCropDataColumns = (data: CropData[]): string[] => {
@@ -49,7 +49,6 @@ const getCropDataColumns = (data: CropData[]): string[] => {
 };
 
 export default function AllDataPage() {
-  const [file, setFile] = useState<File | null>(null);
   const [cropId, setCropId] = useState<string>("");
   const [data, setData] = useState<CropData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -64,7 +63,6 @@ export default function AllDataPage() {
     setError("");
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
-      setFile(selectedFile);
       setScanMessage("Scanning...");
 
       const reader = new FileReader();
@@ -81,7 +79,7 @@ export default function AllDataPage() {
         image.onload = () => {
           try {
             scanImage(image);
-          } catch (err) {
+          } catch {
             setScanMessage("Error processing image.");
             setError("Failed to process image. Please try again.");
           }
@@ -138,9 +136,9 @@ export default function AllDataPage() {
       } else {
         throw new Error("Failed to fetch data");
       }
-    } catch (err: any) {
-      console.error("API Error:", err);
-      setError(`An error occurred: ${err.message || "Unknown error"}`);
+    } catch (error: unknown) {
+      console.error("API Error:", error);
+      setError(`An error occurred: ${(error as Error).message || "Unknown error"}`);
       setScanMessage("Operation failed.");
     } finally {
       setLoading(false);
@@ -225,7 +223,7 @@ export default function AllDataPage() {
           <div className="flex flex-col gap-8">
             {data.map((item, index) => (
               <div
-                key={item.cropId || index}
+                key={(item.cropId as string) || index}
                 className="rounded-2xl border border-green-300 bg-green-50 p-8 shadow-lg hover:shadow-xl transition-shadow"
               >
                 <h2 className="text-2xl font-bold text-green-800 mb-6">
@@ -248,7 +246,6 @@ export default function AllDataPage() {
           </div>
         )}
       </div>
-      <script src="https://cdn.tailwindcss.com"></script>
     </div>
   );
 }
