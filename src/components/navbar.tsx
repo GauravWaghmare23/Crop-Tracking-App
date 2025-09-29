@@ -59,7 +59,7 @@ function Navbar() {
         >
           <span className="text-4xl animate-pulse select-none">🌱</span>
           <span className="text-2xl font-extrabold text-lime-400 hover:text-lime-200 transition-colors duration-300">
-            Nirikshak
+            <span className="text-white">Agri</span><span className="text-[#51CC6E]">Trace</span>
           </span>
         </a>
 

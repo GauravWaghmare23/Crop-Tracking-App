@@ -263,7 +263,7 @@ export default function HomeContent() {
             <p className="text-lg font-semibold uppercase text-[#51CC6E] mb-3">Blockchain for a Greener Future</p>
           </div>
           <h1 className="hero-content-item text-5xl md:text-7xl font-extrabold mb-6 text-[#1A1A1A]">
-            Nirikshak is <span className="text-[#51CC6E]">Trust</span>
+            <span className="text-black">Agri</span><span className="text-[#51CC6E]">Trace</span> is <span className="text-[#51CC6E]">Trust</span>
           </h1>
           <p className="hero-content-item text-xl text-gray-600 max-w-2xl mx-auto">
             Empowering farmers and consumers with **transparent** and **fair** food supply chains, secured by blockchain technology.
@@ -397,7 +397,7 @@ export default function HomeContent() {
       {/* Contact/CTA Section */}
       <section
         id="contact"
-        className="py-24 px-4 bg-[#51CC6E] text-white text-center rounded-3xl shadow-2xl max-w-7xl mx-auto my-16"
+        className="py-24 px-4 bg-[#3a8d4d] text-white text-center shadow-2xl max-w-7xl mx-auto my-16"
       >
         <h2 className="text-5xl font-extrabold mb-8">
           Join Us In Making A Difference
